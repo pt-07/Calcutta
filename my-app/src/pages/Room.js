@@ -1,51 +1,65 @@
 
-
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+
+
+import{BrowserRouter as Router, Route, Link} from 'react-router-dom'
 
 function Room  () {
     const {id} = useParams();
-    const [name, setName] = useState('');
-    const [names, setNames] = useState([{name: 'Patrick', id:1}]);
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const user = {name}
-        //fetch('http://localhost:5000', {method: 'POST'})
+    const [allNames, setAllNames] = useState([])
+    const [data, setData] = useState({
+        name : ""
+    });
+    const submitName = async () =>{
+        await axios.post("http://localhost:5000/ninjas",
+        {
+        name: data.name
+       })
     }
 
-    //need to generate rest API
-    useEffect(() =>{
-        fetch('http://localhost:5000/names')
 
+    const getNames = async () =>{
+        axios.get("http://localhost:5000/getNinjas")
         .then(res => {
-            return res.json()
+            let jsonNameArray = res.data
+            const arr = [];
+            for(let i = 0; i < jsonNameArray.length; i++){
+                arr.push(jsonNameArray[i].name)
+            }
+            setAllNames(arr)
         })
-        .then(data=>{
-            console.log(data)
-            setNames(data)
-        })
-    },[])
-    
+    }
+ 
+
+    function handle(e) {
+        const newData = {...data}
+        newData[e.target.id] = e.target.value.trim();
+        setData(newData)
+    }
+//need to fetch list on names from database and display it 
 
 
     return(
         <div>
-            <h1> Your Room Code is: {id}</h1>
-            <form onSubmit={handleSubmit}> 
-                <label>Enter your name</label>
-                <input 
-                 type="text"
-                 required
-                 value = {name}
-                 onChange={(e) => setName(e.target.value)}
-                 />
-                <button onClick={(e) => setName(e.target.value)}>Submit</button>
-            </form>
-            <p>
-                {name}
-                
-            </p>
+            <h1> Your Room Code is: {id}</h1>  
 
+
+            <form onSubmit={(e) => submitName(e)} onChange={getNames}>
+                <label> Enter Your Name </label>
+                <input onChange={(e) => {handle(e)}} id= "name" value = {data.name} placeholder="name" type = "text"></input>
+                
+            </form>
+
+            <h3>Name List : {allNames} </h3>
+
+            
+            <Link to= {`/Room/${id}/begin`}>
+            <button>
+                Begin Auction
+            </button>
+            </Link>
         </div>
     )
 }

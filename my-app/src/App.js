@@ -3,6 +3,7 @@ import CreateRoom from "./pages/CreateRoom"
 import Home from "./pages/Home"
 import EnterRoom from "./pages/EnterRoom"
 import Room from "./pages/Room"
+import Begin from "./pages/Begin";
 import{BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 
 function App() {
@@ -25,6 +26,9 @@ function App() {
         </Route>
         <Route exact path= "/Room/:id">
           <Room/>
+        </Route>
+        <Route exact path= "/Room/:id/begin">
+          <Begin/>
         </Route>
       </Switch>
     </div>

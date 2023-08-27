@@ -2,9 +2,24 @@ const { ObjectId } = require('mongodb')
 const {connectToDb, getDb} = require('./db')
 const express = require('express')
 const app = express()
+const mongoose = require('mongoose')
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const Ninja = require('./models/ninja')
+const Bid = require('./models/bid')
 
 let db 
+
+app.use(cors());
+
+app.use(bodyParser.json());
 app.use(express.json())
+
+mongoose.connect( "mongodb+srv://pjt07016:MyWisc2025@cluster0.ev8tzxu.mongodb.net/")
+
+
+
+
 connectToDb((err)=>{
     if(!err){
         app.listen(5000, () => {console.log("server started on port 5000")})
@@ -15,24 +30,6 @@ connectToDb((err)=>{
     }
 })
 
-
-app.get('/api', (req, res) => {
-    db.collection('books')
-    .find() //cursor 
-    res.json({mssg: "hello"})
-} )
-
-app.get('names/:id', (req, res) => {
-    req.params.id
-    db.collection('books')
-     .findOne({_id: ObjectId(req.params.id)})
-     .then(doc =>{
-        res.status(200).json(doc)
-     })
-     .catch(err=>{
-        res.status(500).json({error: 'could not fetch document'})
-     })
-})
 
 app.post('/books', (req, res) =>{
     const book = req.body
@@ -45,3 +42,60 @@ app.post('/books', (req, res) =>{
         res.status(500).json({err : 'could not create new document'})
       })
 })
+
+
+//sending bids 
+
+app.post('/bids', function(req, res, next){
+    Bid.create(req.body).then(function(bid){
+        res.send(bid)
+    }).catch(next); 
+});
+
+
+//get the highest bid
+
+app.get('/getBid', function(req,res,next){
+    let ret = []
+    db.collection('bids')
+        .find()
+        .forEach(bid => ret.push(bid))
+        .then(() =>{
+            res.status(200).json(ret)
+        })
+        .catch(()=>{
+            res.status(500).json({error: 'Could not fetch'})
+        })
+})
+//retrieving names from database
+
+app.get('/getNinjas', function(req,res, next){
+    let ret = []
+    db.collection('ninjas')
+        .find()
+        .forEach(ninja => ret.push(ninja))
+        .then(() =>{
+            res.status(200).json(ret)
+        })
+        .catch(() =>{
+            res.status(500).json({error : 'Could not fetch documents'})
+        })
+})
+
+//posting names to DB
+app.post('/ninjas', function(req, res, next){
+    Ninja.create(req.body).then(function(ninja){
+        res.send(ninja)
+    }).catch(next); 
+});
+
+//error handling middlewear
+app.use(function(err, req, res, next){
+    console.log(err)
+    res.send({error: err.message})
+});
+
+//need api to get room number and return highest bid
+
+
+//need to have an 
