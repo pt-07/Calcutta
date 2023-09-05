@@ -1,11 +1,13 @@
 import { useState } from "react"
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
-
+import axios from "axios";
 export default function Room(){
     const [input, setInput] = useState('');
+
+
     return (
         <body>
-         <input value={input} onInput={(e) => setInput(e.target.value)}/>
+         <input value={input} onInput={(e) => setInput(e.target.value)} onClick />
          <Link to= {`/Room/${input}`}>
             <button>
                 Enter Room

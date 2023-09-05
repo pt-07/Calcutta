@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const Ninja = require('./models/ninja')
 const Bid = require('./models/bid')
+const Room = require('./models/room')
 
 let db 
 
@@ -31,6 +32,7 @@ connectToDb((err)=>{
 })
 
 
+
 app.post('/books', (req, res) =>{
     const book = req.body
     db.collection('books')
@@ -46,10 +48,8 @@ app.post('/books', (req, res) =>{
 
 //sending bids 
 
-app.post('/bids', function(req, res, next){
-    Bid.create(req.body).then(function(bid){
-        res.send(bid)
-    }).catch(next); 
+app.put('/bids', function(req, res, next){
+    Bid.findOneAndUpdate({name: "OnlyBid"});
 });
 
 
@@ -95,7 +95,11 @@ app.use(function(err, req, res, next){
     res.send({error: err.message})
 });
 
-//need api to get room number and return highest bid
+//need to create new collection for each room
 
+app.post('/{id}', function(req, res, next){
 
-//need to have an 
+    Room.create(req.body).then(function(room){
+        res.send(room);
+    }).catch(next)
+})
