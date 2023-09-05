@@ -3,7 +3,8 @@ const Schema = mongoose.Schema
 
 const BidSchema = new Schema({
     bid: {
-        type: Number
+        type: Number,
+        default: 0
     },
     name: {
         type: String,

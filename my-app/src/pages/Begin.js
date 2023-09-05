@@ -9,6 +9,10 @@ function Begin(){
 
     const teamList = ['Giants', 'Eagles', 'Redskins', 'Cowboys']
 
+
+
+
+
     function End(){
         //needs to store a map (team = key, value = bid) to the db, POST request to store map
         //need to reset bids and update team array (PUT requests)
@@ -33,20 +37,13 @@ function Begin(){
     const [highBid, setHighBid] = useState(0)
 
     const putBid = async () => {
-        await axios.put("http://localhost:5000/bids",
+        console.log(data.Bid)
+        await axios.put("http://localhost:5000/bids/64f6780a4635f266f41f44d0",
         {
             bid: data.Bid
        })
     }
 
-    
-    const submitBid = async () =>{
-
-        await axios.post("http://localhost:5000/bids",
-        {
-            bid: data.Bid
-       })
-    }
 
     const getHighBid = async () =>{
         axios.get("http://localhost:5000/getBid")

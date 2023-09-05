@@ -18,9 +18,6 @@ app.use(express.json())
 
 mongoose.connect( "mongodb+srv://pjt07016:MyWisc2025@cluster0.ev8tzxu.mongodb.net/")
 
-
-
-
 connectToDb((err)=>{
     if(!err){
         app.listen(5000, () => {console.log("server started on port 5000")})
@@ -48,8 +45,11 @@ app.post('/books', (req, res) =>{
 
 //sending bids 
 
-app.put('/bids', function(req, res, next){
-    Bid.findOneAndUpdate({name: "OnlyBid"});
+app.put('/bids/:id', function(req, res, next){
+
+    Bid.findByIdAndUpdate({_id: req.params.id}, req.body).then(function(bid){
+        res.send(bid)
+    });
 });
 
 
@@ -95,11 +95,3 @@ app.use(function(err, req, res, next){
     res.send({error: err.message})
 });
 
-//need to create new collection for each room
-
-app.post('/{id}', function(req, res, next){
-
-    Room.create(req.body).then(function(room){
-        res.send(room);
-    }).catch(next)
-})
