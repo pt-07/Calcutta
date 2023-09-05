@@ -13,7 +13,7 @@ function Room  () {
         name : ""
     });
     const submitName = async () =>{
-        await axios.post("http://localhost:5000/ninjas",
+        await axios.post(`http://localhost:5000/${id}/names`,
         {
         name: data.name
        })

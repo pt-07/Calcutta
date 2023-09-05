@@ -4,6 +4,10 @@ const Schema = mongoose.Schema
 const BidSchema = new Schema({
     bid: {
         type: Number
+    },
+    name: {
+        type: String,
+        default: "OnlyBid"
     }
 });
 
