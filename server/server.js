@@ -7,7 +7,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const Ninja = require('./models/ninja')
 const Bid = require('./models/bid')
-const Room = require('./models/room')
+const Team = require('./models/team')
+const BidTeam = require('./models/bidTeam')
 
 let db 
 
@@ -30,10 +31,22 @@ connectToDb((err)=>{
 
 
 
-app.post('/books', (req, res) =>{
-    const book = req.body
-    db.collection('books')
-      .insertOne(book)
+app.put('/teams/:id', (req,res) =>{
+    Team.findByIdAndUpdate({_id: req.params.id}, req.body).then(function(team){
+        res.send(team)
+    });
+})
+app.get('/teams', (req, res) =>{
+    db.collection('teams')
+    .findOne({})
+    .then(doc => {
+        res.status(200).json(doc)
+    })
+})
+app.post('/teams', (req, res) =>{
+    const teams = req.body
+    db.collection('teams')
+      .insertOne(teams)
       .then(result =>{
         res.status(201).json(result)
       })
@@ -43,10 +56,15 @@ app.post('/books', (req, res) =>{
 })
 
 
+app.post('/bidTeam', function(req,res,next){
+    BidTeam.create(req.body).then(function(bidteam){
+        res.send(bidteam)
+    }).catch(next)
+})
+
 //sending bids 
 
 app.put('/bids/:id', function(req, res, next){
-
     Bid.findByIdAndUpdate({_id: req.params.id}, req.body).then(function(bid){
         res.send(bid)
     });
@@ -56,16 +74,9 @@ app.put('/bids/:id', function(req, res, next){
 //get the highest bid
 
 app.get('/getBid', function(req,res,next){
-    let ret = []
-    db.collection('bids')
-        .find()
-        .forEach(bid => ret.push(bid))
-        .then(() =>{
-            res.status(200).json(ret)
-        })
-        .catch(()=>{
-            res.status(500).json({error: 'Could not fetch'})
-        })
+    Bid.find({name: "OnlyBid"}).then(function(bid){
+        res.send(bid);
+    })
 })
 //retrieving names from database
 

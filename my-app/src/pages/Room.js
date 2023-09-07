@@ -31,7 +31,46 @@ function Room  () {
             setAllNames(arr)
         })
     }
- 
+    
+
+    const sendTeams = async () =>{
+        axios.post("http://localhost:5000/teams", {
+            teams:
+            ["Arizona Cardinals",
+            "Atlanta Falcons",
+            "Baltimore Ravens",
+            "Buffalo Bills",
+"Carolina Panthers",
+"Chicago Bears",
+"Cincinnati Bengals",
+"Cleveland Browns",
+"Dallas Cowboys",
+"Denver Broncos",
+"Detroit Lions",
+"Green Bay Packers",
+"Houston Texans",
+"Indianapolis Colts",
+"Jacksonville Jaguars",
+"Kansas City Chiefs",
+"Las Vegas Raiders",
+"Los Angeles Chargers",
+"Los Angeles Rams",
+"Miami Dolphins",
+"Minnesota Vikings",
+"New England Patriots",
+"New Orleans Saints",
+"New York Giants",
+"New York Jets",
+"Philadelphia Eagles",
+"Pittsburgh Steelers",
+"San Francisco 49ers",
+"Seattle Seahawks",
+"Tampa Bay Buccaneers",
+"Tennessee Titans",
+"Washington Football Team"
+            ]
+        })
+    }
 
     function handle(e) {
         const newData = {...data}
@@ -56,7 +95,7 @@ function Room  () {
 
             
             <Link to= {`/Room/${id}/begin`}>
-            <button>
+            <button onClick={sendTeams}>
                 Begin Auction
             </button>
             </Link>

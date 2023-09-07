@@ -7,7 +7,6 @@ function Begin(){
     });
     const [team, setTeam] = useState("none")
 
-    const teamList = ['Giants', 'Eagles', 'Redskins', 'Cowboys']
 
 
 
@@ -16,6 +15,7 @@ function Begin(){
     function End(){
         //needs to store a map (team = key, value = bid) to the db, POST request to store map
         //need to reset bids and update team array (PUT requests)
+        
 
     }
 
@@ -25,23 +25,48 @@ function Begin(){
 
     }
 
+    function getTeam(){
+        axios.get("http://localhost:5000/teams")
+        .then(res =>{
+            const teamArr = res.data.teams
+            let rand = Math.floor(Math.random() * teamArr.length);
+            setTeam(teamArr[rand])
+            teamArr.splice(rand,1)
+            console.log(teamArr)
 
-    function chooseTeam () {
-        let rand = Math.floor(Math.random() * teamList.length) +1;
-        setTeam(teamList[rand])
+            axios.put("http://localhost:5000/teams/64f90c50bcea429209c184c9", {
+                teams: teamArr
+            })
+            //need to get bid
+            
+            axios.post("http://localhost:5000/bidTeam", {
+                team :team,
+                bid: highBid
+            } )
+            axios.put("http://localhost:5000/bids/64f6780a4635f266f41f44d0",
+            {
+            bid: 0
+            })
+            
+        }
+        )
+
+
     }
-    useEffect(()=>{
-        chooseTeam();
-    });
+   
 
     const [highBid, setHighBid] = useState(0)
 
     const putBid = async () => {
-        console.log(data.Bid)
-        await axios.put("http://localhost:5000/bids/64f6780a4635f266f41f44d0",
-        {
+        console.log(highBid)
+
+        if(data.Bid > highBid){
+            await axios.put("http://localhost:5000/bids/64f6780a4635f266f41f44d0",
+            {
             bid: data.Bid
-       })
+            })
+        }
+        
     }
 
 
@@ -64,6 +89,8 @@ function Begin(){
         newData[e.target.id] = e.target.value;
         setData(newData)
     }
+
+   
     return(
         <div>
             <h3>
@@ -81,7 +108,7 @@ function Begin(){
                 Highest Bid : {highBid}
             </h1>
 
-            <button>
+            <button onClick={getTeam}>
                 End Bidding
             </button>
            
