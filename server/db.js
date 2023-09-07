@@ -1,19 +1,21 @@
+const { MongoClient } = require("mongodb"); // allows us to connect to
 
-const{MongoClient} = require('mongodb')
-
-uri = "mongodb+srv://pjt07016:MyWisc2025@cluster0.ev8tzxu.mongodb.net/"
-
-module.exports= {
-    connectToDb: (cb) =>{
-        MongoClient.connect(uri)
-        .then((client) => {
-            dbConnection = client.db()
-            return cb()
-        })
-        .catch(err =>{
-            console.log(err)
-            return cb(err)
-        })
-    },
-    getDb:() => dbConnection
-}
+let dbConnection;
+let uri =
+  "mongodb+srv://jloverde:7P1ECq7Q2SbZ1n0Y@cluster0.bhwgpkr.mongodb.net/";
+// connects to the atlas database
+module.exports = {
+  // async task
+  connectToDb: (cb) => {
+    MongoClient.connect(uri)
+      .then((client) => {
+        dbConnection = client.db();
+        return cb();
+      })
+      .catch((err) => {
+        console.log(err);
+        return cb(err);
+      });
+  },
+  getDb: () => dbConnection,
+};
