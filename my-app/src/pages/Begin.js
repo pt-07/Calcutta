@@ -25,6 +25,7 @@ function Begin(){
 
     }
 
+    
     function getTeam(){
         axios.get("http://localhost:5000/teams")
         .then(res =>{
