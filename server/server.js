@@ -31,11 +31,14 @@ connectToDb((err)=>{
 
 
 
+//updates team to remove the team that is currently being bidded on from the array (NOT WORKING) 
 app.put('/teams/:id', (req,res) =>{
     Team.findByIdAndUpdate({_id: req.params.id}, req.body).then(function(team){
         res.send(team)
     });
 })
+
+//gets the array of teams to choose a random one
 app.get('/teams', (req, res) =>{
     db.collection('teams')
     .findOne({})
@@ -43,6 +46,8 @@ app.get('/teams', (req, res) =>{
         res.status(200).json(doc)
     })
 })
+
+//initially adds all the teams 
 app.post('/teams', (req, res) =>{
     const teams = req.body
     db.collection('teams')
@@ -56,6 +61,7 @@ app.post('/teams', (req, res) =>{
 })
 
 
+//no longer being used
 app.post('/bidTeam', function(req,res,next){
     BidTeam.create(req.body).then(function(bidteam){
         res.send(bidteam)
@@ -63,7 +69,7 @@ app.post('/bidTeam', function(req,res,next){
 })
 
 //sending bids 
-
+//IN USE sends bids, updates bids
 app.put('/bids/:id', function(req, res, next){
     Bid.findByIdAndUpdate({_id: req.params.id}, req.body).then(function(bid){
         res.send(bid)
@@ -71,8 +77,8 @@ app.put('/bids/:id', function(req, res, next){
 });
 
 
-//get the highest bid
 
+//gets the only bid in the collection
 app.get('/getBid', function(req,res,next){
     Bid.find({name: "OnlyBid"}).then(function(bid){
         res.send(bid);
