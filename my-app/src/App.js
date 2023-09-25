@@ -1,5 +1,4 @@
 import NavBar from "./NavBar";
-import CreateRoom from "./pages/CreateRoom";
 import Home from "./pages/Home";
 import EnterRoom from "./pages/EnterRoom";
 import Room from "./pages/Room";
@@ -14,9 +13,6 @@ function App() {
         <Switch>
           <Route exact path="/">
             <Home />
-          </Route>
-          <Route exact path="/CreateRoom">
-            <CreateRoom />
           </Route>
           <Route exact path="/EnterRoom">
             <EnterRoom />

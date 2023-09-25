@@ -4,19 +4,21 @@ import axios from "axios";
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
-// getting the names is not working
 function Room() {
   const { id } = useParams();
   const [allNames, setAllNames] = useState([]);
   const [data, setData] = useState({
     name: "",
   });
+
+  // posts the name when entered into the text box
   const submitName = async () => {
-    await axios.post("http://localhost:5000/ninjas", {
+    await axios.post(`http://localhost:5000/${id}/names`, {
       name: data.name,
     });
   };
 
+  // supposed to get all names when someone is typing in the text box and print it into name list.
   const getNames = async () => {
     axios.get("http://localhost:5000/getNinjas").then((res) => {
       let jsonNameArray = res.data;
@@ -25,6 +27,46 @@ function Room() {
         arr.push(jsonNameArray[i].name);
       }
       setAllNames(arr);
+    });
+  };
+
+  // when clicked begin auction send this team list as an array into bidTeam
+  const sendTeams = async () => {
+    axios.post("http://localhost:5000/teams", {
+      teams: [
+        "Arizona Cardinals",
+        "Atlanta Falcons",
+        "Baltimore Ravens",
+        "Buffalo Bills",
+        "Carolina Panthers",
+        "Chicago Bears",
+        "Cincinnati Bengals",
+        "Cleveland Browns",
+        "Dallas Cowboys",
+        "Denver Broncos",
+        "Detroit Lions",
+        "Green Bay Packers",
+        "Houston Texans",
+        "Indianapolis Colts",
+        "Jacksonville Jaguars",
+        "Kansas City Chiefs",
+        "Las Vegas Raiders",
+        "Los Angeles Chargers",
+        "Los Angeles Rams",
+        "Miami Dolphins",
+        "Minnesota Vikings",
+        "New England Patriots",
+        "New Orleans Saints",
+        "New York Giants",
+        "New York Jets",
+        "Philadelphia Eagles",
+        "Pittsburgh Steelers",
+        "San Francisco 49ers",
+        "Seattle Seahawks",
+        "Tampa Bay Buccaneers",
+        "Tennessee Titans",
+        "Washington Football Team",
+      ],
     });
   };
 
@@ -55,7 +97,7 @@ function Room() {
       <h3>Name List : {allNames} </h3>
 
       <Link to={`/Room/${id}/begin`}>
-        <button>Begin Auction</button>
+        <button onClick={sendTeams}>Begin Auction</button>
       </Link>
     </div>
   );

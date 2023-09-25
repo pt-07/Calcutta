@@ -38,8 +38,31 @@ function Begin() {
       }
     }, [countdown]);
 
-    return <h2>Count Down: {countdown} </h2>;
+    return <span>{countdown}</span>;
     // going to need to restart everytime, a new bid is sent to the Database
+  }
+
+  function getTeam() {
+    axios.get("http://localhost:5000/teams").then((res) => {
+      const teamArr = res.data.teams;
+      let rand = Math.floor(Math.random() * teamArr.length);
+      setTeam(teamArr[rand]);
+      teamArr.splice(rand, 1);
+      console.log(teamArr);
+
+      axios.put("http://localhost:5000/teams/64f90c50bcea429209c184c9", {
+        teams: teamArr,
+      });
+      //need to get bid
+
+      axios.post("http://localhost:5000/bidTeam", {
+        team: team,
+        bid: highBid,
+      });
+      axios.put("http://localhost:5000/bids/64f6780a4635f266f41f44d0", {
+        bid: 0,
+      });
+    });
   }
   // chooses a team randomly from the array
   function chooseTeam() {
@@ -53,11 +76,16 @@ function Begin() {
 
   const [highBid, setHighBid] = useState(0);
 
-  const putBid = async () => {
+  const postBid = async () => {
     console.log(data.Bid);
-    await axios.put("http://localhost:5000/bids/64f6780a4635f266f41f44d0", {
-      bid: data.Bid,
-    });
+
+    if (data.Bid > highBid) {
+      await axios.post("http://localhost:5000/bids", {
+        name: "OnlyBid", // Change this to an appropriate bid name
+        bid: data.Bid,
+      });
+      setData({ ...data, Bid: 0 }); // Reset the bid input
+    }
   };
 
   const getHighBid = async () => {
@@ -73,6 +101,11 @@ function Begin() {
     });
   };
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    postBid();
+  }
+
   function handle(e) {
     const newData = { ...data };
     newData[e.target.id] = e.target.value;
@@ -82,10 +115,10 @@ function Begin() {
     <div>
       <h3>We will now begin the auction</h3>
       <h2>
-        {" "}
-        Count Down for Bidding: <Countdown seconds={15} />{" "}
+        Count Down for Bidding: <Countdown seconds={15} />
       </h2>
-      <form onSubmit={(e) => putBid(e)} onChange={getHighBid}>
+
+      <form onSubmit={handleSubmit} onChange={getHighBid}>
         <label> Enter Your bid </label>
         <input
           onChange={(e) => {
