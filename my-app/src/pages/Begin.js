@@ -6,6 +6,7 @@ function Begin() {
     Bid: 0,
   });
   const [team, setTeam] = useState("none");
+  const [countdown, setCountdown] = useState(15);
 
   const teamList = ["Giants", "Eagles", "Redskins", "Cowboys"];
 
@@ -20,7 +21,6 @@ function Begin() {
 
   // function to create timer
   function Countdown({ seconds }) {
-    const [countdown, setCountdown] = useState(seconds);
     const timerId = useRef(); // keeps values throughout renders
 
     useEffect(() => {
@@ -85,9 +85,11 @@ function Begin() {
         bid: data.Bid,
       });
       setData({ ...data, Bid: 0 }); // Reset the bid input
+      setCountdown(15); // resets countdown on every bid
     }
   };
 
+  // This works on every buffer getting the highest bid.
   const getHighBid = async () => {
     axios.get("http://localhost:5000/getBid").then((res) => {
       let jsonNameArray = res.data;
@@ -97,6 +99,7 @@ function Begin() {
           arr = jsonNameArray[i].bid;
         }
       }
+      console.log(arr);
       setHighBid(arr);
     });
   };
@@ -105,6 +108,15 @@ function Begin() {
     e.preventDefault();
     postBid();
   }
+
+  const clearBids = async () => {
+    try {
+      await axios.delete("http://localhost:5000/bids");
+      console.log("All bids have been cleared.");
+    } catch (error) {
+      console.error("Error clearing bids:", error);
+    }
+  };
 
   function handle(e) {
     const newData = { ...data };
@@ -115,7 +127,7 @@ function Begin() {
     <div>
       <h3>We will now begin the auction</h3>
       <h2>
-        Count Down for Bidding: <Countdown seconds={15} />
+        Count Down for Bidding: <Countdown />
       </h2>
 
       <form onSubmit={handleSubmit} onChange={getHighBid}>
@@ -134,6 +146,7 @@ function Begin() {
       <h1>Highest Bid : {highBid}</h1>
 
       <button>End Bidding</button>
+      <button onClick={clearBids}>Clear Bids</button>
     </div>
   );
 }

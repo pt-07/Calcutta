@@ -20,6 +20,19 @@ app.use(express.json());
 mongoose.connect(
   "mongodb+srv://jloverde:fuckyou123@cluster0.bhwgpkr.mongodb.net/"
 );
+
+// connects to data base
+connectToDb((err) => {
+  if (!err) {
+    app.listen(5000, () => {
+      console.log("server started on port 5000");
+    });
+    db = getDb();
+  } else {
+    console.log("error connecting");
+  }
+});
+
 // Working posting bid funciton
 app.post("/bids", function (req, res, next) {
   const { name, bid } = req.body;
@@ -37,16 +50,13 @@ app.post("/bids", function (req, res, next) {
     .catch(next);
 });
 
-// connects to data base
-connectToDb((err) => {
-  if (!err) {
-    app.listen(5000, () => {
-      console.log("server started on port 5000");
-    });
-    db = getDb();
-  } else {
-    console.log("error connecting");
-  }
+// delets all the bids in the database
+app.delete("/bids", function (req, res, next) {
+  Bid.deleteMany({})
+    .then(function () {
+      res.status(200).send("All bids have been cleared.");
+    })
+    .catch(next);
 });
 
 // take it out of the array
@@ -66,6 +76,7 @@ app.get("/teams", (req, res) => {
     });
 });
 
+// creates the array of teams in MongoDB
 app.post("/teams", (req, res) => {
   const teams = req.body.teams; // assuming the request body has a 'teams' property
   db.collection("teams")
@@ -105,33 +116,32 @@ app.get("/getBid", function (req, res, next) {
     res.send(bid);
   });
 });
-// //retrieving names from database
+// retrieving names from database
 
-// app.get("/getNinjas", function (req, res, next) {
-//   let ret = [];
-//   db.collection("ninjas")
-//     .find()
-//     .forEach((ninja) => ret.push(ninja))
-//     .then(() => {
-//       res.status(200).json(ret);
-//     })
-//     .catch(() => {
-//       res.status(500).json({ error: "Could not fetch documents" });
-//     });
-// });
-// positng bids
+app.get("/getNinjas", function (req, res, next) {
+  let ret = [];
+  db.collection("ninjas")
+    .find()
+    .forEach((ninja) => ret.push(ninja))
+    .then(() => {
+      res.status(200).json(ret);
+    })
+    .catch(() => {
+      res.status(500).json({ error: "Could not fetch documents" });
+    });
+});
 
-// //posting names to DB
-// app.post("/ninjas", function (req, res, next) {
-//   Ninja.create(req.body)
-//     .then(function (ninja) {
-//       res.send(ninja);
-//     })
-//     .catch(next);
-// });
+//posting names to DB
+app.post("/ninjas", function (req, res, next) {
+  Ninja.create(req.body)
+    .then(function (ninja) {
+      res.send(ninja);
+    })
+    .catch(next);
+});
 
-// //error handling middlewear (tutorial stuff)
-// app.use(function (err, req, res, next) {
-//   console.log(err);
-//   res.send({ error: err.message });
-// });
+//error handling middlewear (tutorial stuff)
+app.use(function (err, req, res, next) {
+  console.log(err);
+  res.send({ error: err.message });
+});
