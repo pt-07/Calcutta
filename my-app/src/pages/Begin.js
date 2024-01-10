@@ -8,9 +8,9 @@ function Begin(){
     const [team, setTeam] = useState("none")
 
 
+    ///need to create map for the pairing of teams and bids
 
-
-
+    const [teamBidMap, setTeamBidMap] = useState()
 
     function End(){
         //needs to store a map (team = key, value = bid) to the db, POST request to store map
@@ -22,7 +22,12 @@ function Begin(){
     
     function displayPastBids(){
         //GET request to display the map of team/bids
+        axios.get("http://localhost:5000/getPastBids")
+        .then(res=>{
+            let arr = res.data
 
+
+        })
     }
 
     
@@ -59,6 +64,8 @@ function Begin(){
     const [highBid, setHighBid] = useState(0)
 
     const putBid = async () => {
+        //need to save team name so it doesn't get set to none -- preverntDefault()?? or store name in variable, only render on end bidding button click. 
+        
         console.log(highBid)
 
         if(data.Bid > highBid){
